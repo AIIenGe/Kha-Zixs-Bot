@@ -8,7 +8,7 @@ from collections import defaultdict
 import operator
 from ast import literal_eval
 import urllib
-
+from PIL import Image
 import shutil
 
 client = discord.Client()
@@ -34,22 +34,19 @@ async def on_message(message):  # event that happens per any message.
         position = message.content.replace("!popular ", "").split()[1]
         await client.send_message(message.channel, popularBuild(champion, position), tts=True)
 
-        for image in popularBuild(champion, position):
-            imageName = str(image) + '.png'
-            with open(imageName, 'rb') as f:
-                await client.send_file(message.channel, f)
+        printBuild(popularBuild(userErrorChampion(champion), userErrorPosition(position)))
+        with open('pasted_image.png', 'rb') as f:
+            await client.send_file(message.channel, f)
     if "!winning" in message.content:
         champion = message.content.replace("!winning ", "").split()[0]
         position = message.content.replace("!winning ", "").split()[1]
         await client.send_message(message.channel, popularBuild(champion, position), tts=True)
 
-        for image in winnestBuild(champion, position):
-            imageName = str(image) + '.png'
-            with open(imageName, 'rb') as f:
-                await client.send_file(message.channel, f)
-    if "!winning" in message.content:
+        printBuild(winnestBuild(userErrorChampion(champion), userErrorPosition(position)))
+        with open('pasted_image.png', 'rb') as f:
+            await client.send_file(message.channel, f)
+    if "!help" in message.content:
         await client.send_message(message.channel, "!popular, !winning, !counter")
-
 
 def getChampion(input, role):
     url = 'http://api.champion.gg/champion/' + input + '/matchup?api_key=d143ded682d41d1e3ebe173d0b327e46'
@@ -122,6 +119,20 @@ def winnestBuild(champion, position):
             shutil.copyfileobj(url_response.raw, out_file)
         del url_response
     return flat_list
+def printBuild(itemList):
+    image = Image.open("test.png")
+    new_image = image.resize((384, 64))
+    index = 0
+    for x in itemList:
+        print(x)
+        logo = Image.open(str(x) + '.png')
+        image_copy = new_image.copy()
+        position = (index, 0)
+        image_copy.paste(logo, position)
+        image_copy.save('pasted_image.png')
+        index += 64
+        new_image = image_copy
+    image_copy.show()
 '''
 url = 'http://ddragon.leagueoflegends.com/cdn/5.1.2/img/item/3128.png'
 response = requests.get(url, stream=True)
@@ -130,4 +141,3 @@ with open('img.png', 'wb') as out_file:
 del response
 '''
 client.run("NTA0Nzg4NjA3NDQyMjIzMTM0.DrKZBw.gYtkzt_4qFZDOf2Id1OQ_5th3dk")
-
