@@ -133,11 +133,5 @@ def printBuild(itemList):
         index += 64
         new_image = image_copy
     image_copy.show()
-'''
-url = 'http://ddragon.leagueoflegends.com/cdn/5.1.2/img/item/3128.png'
-response = requests.get(url, stream=True)
-with open('img.png', 'wb') as out_file:
-    shutil.copyfileobj(response.raw, out_file)
-del response
-'''
+
 client.run("NTA0Nzg4NjA3NDQyMjIzMTM0.DrKZBw.gYtkzt_4qFZDOf2Id1OQ_5th3dk")
